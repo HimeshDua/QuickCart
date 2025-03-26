@@ -1,7 +1,8 @@
 'use client'
-import { productsDummyData, userDummyData } from "@/assets/assets";
-import { useRouter } from "next/navigation";
-import { createContext, useContext, useEffect, useState } from "react";
+import {productsDummyData, userDummyData} from "@/assets/assets";
+import {useRouter} from "next/navigation";
+import {createContext, useContext, useEffect, useState} from "react";
+import {useUser} from "@clerk/nextjs";
 
 export const AppContext = createContext();
 
@@ -13,6 +14,8 @@ export const AppContextProvider = (props) => {
 
     const currency = process.env.NEXT_PUBLIC_CURRENCY
     const router = useRouter()
+
+    const {user} = useUser()
 
     const [products, setProducts] = useState([])
     const [userData, setUserData] = useState(false)
@@ -32,8 +35,7 @@ export const AppContextProvider = (props) => {
         let cartData = structuredClone(cartItems);
         if (cartData[itemId]) {
             cartData[itemId] += 1;
-        }
-        else {
+        } else {
             cartData[itemId] = 1;
         }
         setCartItems(cartData);
@@ -82,6 +84,7 @@ export const AppContextProvider = (props) => {
     }, [])
 
     const value = {
+        user,
         currency, router,
         isSeller, setIsSeller,
         userData, fetchUserData,

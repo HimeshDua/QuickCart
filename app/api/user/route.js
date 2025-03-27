@@ -7,7 +7,7 @@ export async function GET(req) {
   
   const { userId } = getAuth(req);
   if (!userId) {
-    return Response.json({ error: 'Unauthorized hehe' }, { status: 401 });
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
   
   const user = await currentUser();

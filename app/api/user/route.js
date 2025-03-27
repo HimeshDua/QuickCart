@@ -1,15 +1,15 @@
 import connectDB from '@/config/db';
 import User from '@/models/User.model';
-import { currentUser, getAuth } from '@clerk/nextjs/server'
+import { auth, currentUser } from '@clerk/nextjs/server'
 
 /////////////////////////////////////////////////////////////////
 export async function GET(req) {
-  
-  const { userId } = getAuth(req);
+
+  const { userId } = auth(req);
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
-  
+
   const user = await currentUser();
   if (!user) {
     return Response.json({ error: 'User not found' }, { status: 404 });

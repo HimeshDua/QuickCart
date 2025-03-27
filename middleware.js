@@ -1,9 +1,8 @@
-import { clerkMiddleware } from '@clerk/nextjs/server'
+import { clerkMiddleware } from "@clerk/nextjs/server";
 
-export default clerkMiddleware({ 
-  publicRoutes: ["/", "/all-products"], // Add public pages here
-});
+export default clerkMiddleware();
 
 export const config = {
-  matcher: ["/((?!_next|api|static|.*\\..*).*)"], // Apply middleware to all pages except Next.js internals
+  matcher: ["/((?!_next|.*\\..*|favicon.ico).*)"], // This ensures Clerk is applied to all routes except static assets
 };
+// This middleware function uses Clerk to handle authentication and authorization for your Next.js application.

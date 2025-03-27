@@ -1,13 +1,13 @@
 import connectDB from '@/config/db';
 import User from '@/models/User.model';
-import { auth, currentUser } from '@clerk/nextjs/server'
+import { currentUser, getAuth } from '@clerk/nextjs/server'
 
 /////////////////////////////////////////////////////////////////
 export async function GET(req) {
 
-  const { userId } = auth(req);
+  const { userId } = getAuth(req);
   if (!userId) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    return Response.json({ error: 'Unauthorized hehe' }, { status: 401 });
   }
 
   const user = await currentUser();
@@ -16,6 +16,13 @@ export async function GET(req) {
   }
 
   await connectDB();
+  console.log("Connected to MongoDB");
+  console.log("User ID:", userId);
+  console.log("User email:", user.emailAddresses[0].emailAddress);
+  console.log("User image URL:", user.imageUrl);
+  console.log("User first name:", user.firstName);
+  console.log("User last name:", user.lastName);
+
 
   const { id, firstName, lastName, emailAddresses, imageUrl } = user;
   const email = emailAddresses[0].emailAddress;
@@ -31,12 +38,15 @@ export async function GET(req) {
       imageUrl,
     });
     await existingUser.save();
+    console.log("New user created:", existingUser);
+    
   } else {
     // If user exists, update their info
     existingUser.name = firstName + " " + lastName;
     existingUser.email = email;
     existingUser.imageUrl = imageUrl;
     await existingUser.save();
+    console.log("User updated:", existingUser);
   }
 
   return Response.json(existingUser, { status: 200 });

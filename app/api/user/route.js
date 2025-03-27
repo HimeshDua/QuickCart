@@ -1,17 +1,15 @@
 import connectDB from '@/config/db';
 import User from '@/models/User.model';
 import { currentUser, getAuth } from '@clerk/nextjs/server'
-// import { NextApiRequest, NextApiResponse } from 'next'
 
 /////////////////////////////////////////////////////////////////
-
 export async function GET(req) {
-
+  
   const { userId } = getAuth(req);
   if (!userId) {
     return Response.json({ error: 'Unauthorized hehe' }, { status: 401 });
   }
-
+  
   const user = await currentUser();
   if (!user) {
     return Response.json({ error: 'User not found' }, { status: 404 });

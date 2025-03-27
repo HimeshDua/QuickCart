@@ -7,8 +7,31 @@ import Image from "next/image";
 import { useClerk, UserButton } from "@clerk/nextjs";
 
 const Navbar = () => {
-    const { isSeller, router, user } = useAppContext();
+    const { isSeller, router, user, isSignedIn } = useAppContext();
     const { openSignIn } = useClerk();
+
+    const saveUserToDB = async () => {
+        if (!isSignedIn || !user) return;
+
+        try {
+            const response = await fetch("/api/user", {
+                method: "GET", // Your API automatically creates or updates
+                headers: { "Content-Type": "application/json" },
+            });
+
+            if (!response.ok) {
+                console.error("Failed to save user:", await response.text());
+            }
+        } catch (error) {
+            console.error("Error saving user:", error);
+        }
+    };
+
+    React.useEffect(() => {
+        if (isSignedIn && user) {
+            saveUserToDB();
+        }
+    }, [isSignedIn, user]);
 
     return (<nav
         className="flex items-center justify-between px-6 md:px-16 lg:px-32 py-3 border-b border-gray-300 text-gray-700">

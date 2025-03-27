@@ -17,15 +17,11 @@ export async function GET(req) {
 
   await connectDB();
   console.log("Connected to MongoDB");
-  console.log("User ID:", userId);
-  console.log("User email:", user.emailAddresses[0].emailAddress);
-  console.log("User image URL:", user.imageUrl);
-  console.log("User first name:", user.firstName);
-  console.log("User last name:", user.lastName);
-
 
   const { id, firstName, lastName, emailAddresses, imageUrl } = user;
-  const email = emailAddresses[0].emailAddress;
+  const emails = emailAddresses.map(e => e.emailAddress); // Extract all emails
+
+
 
   let existingUser = await User.findOne({ _id: id });
 
@@ -34,16 +30,16 @@ export async function GET(req) {
     existingUser = new User({
       _id: id,
       name: firstName + " " + lastName,
-      email,
+      emails,
       imageUrl,
     });
     await existingUser.save();
     console.log("New user created:", existingUser);
-    
+
   } else {
     // If user exists, update their info
     existingUser.name = firstName + " " + lastName;
-    existingUser.email = email;
+    existingUser.emails = emails;
     existingUser.imageUrl = imageUrl;
     await existingUser.save();
     console.log("User updated:", existingUser);

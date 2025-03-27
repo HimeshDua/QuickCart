@@ -1,6 +1,8 @@
 import connectDB from '@/config/db';
 import User from '@/models/User.model';
 import { currentUser, getAuth } from '@clerk/nextjs/server'
+export const runtime = "nodejs";
+
 
 /////////////////////////////////////////////////////////////////
 export async function GET(req) {

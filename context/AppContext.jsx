@@ -1,8 +1,8 @@
 'use client'
-import {productsDummyData, userDummyData} from "@/assets/assets";
-import {useRouter} from "next/navigation";
-import {createContext, useContext, useEffect, useState} from "react";
-import {useUser} from "@clerk/nextjs";
+import { productsDummyData, userDummyData } from "@/assets/assets";
+import { useRouter } from "next/navigation";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useUser } from "@clerk/nextjs";
 
 export const AppContext = createContext();
 
@@ -15,11 +15,11 @@ export const AppContextProvider = (props) => {
     const currency = process.env.NEXT_PUBLIC_CURRENCY
     const router = useRouter()
 
-    const {user, isSignedIn} = useUser()
+    const { user, isSignedIn } = useUser()
 
     const [products, setProducts] = useState([])
     const [userData, setUserData] = useState(false)
-    const [isSeller, setIsSeller] = useState(true)
+    const [isSeller, setIsSeller] = useState(false)
     const [cartItems, setCartItems] = useState({})
 
     const fetchProductData = async () => {
@@ -27,7 +27,16 @@ export const AppContextProvider = (props) => {
     }
 
     const fetchUserData = async () => {
-        setUserData(userDummyData)
+        try {
+
+            if (user.publicMetadata.role === 'seller') {
+                setIsSeller(true)
+            }
+            setUserData(userDummyData)
+        } catch (error) {
+            error.message = "Error fetching user data"
+            console.error(error.message)
+        }
     }
 
     const addToCart = async (itemId) => {
@@ -80,8 +89,9 @@ export const AppContextProvider = (props) => {
     }, [])
 
     useEffect(() => {
+        if (!user) return;
         fetchUserData()
-    }, [])
+    }, [user])
 
     const value = {
         user, isSignedIn,

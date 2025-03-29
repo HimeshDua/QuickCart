@@ -15,7 +15,7 @@ const Navbar = () => {
 
         try {
             const response = await fetch("/api/user", {
-                method: "GET", // Your API automatically creates or updates
+                method: "GET",// API automatically creates or updates
                 headers: { "Content-Type": "application/json" },
             });
 
